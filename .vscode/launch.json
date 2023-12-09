@@ -1,0 +1,88 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug (stm32f446re)", // PORTABILITY: PORTABILITY: change this to your platform
+      "cwd": "${workspaceRoot}",
+      "executable": "${workspaceFolder}/bin/stm32f446re/Debug/${input:cortexTargetID}.elf", // PORTABILITY: change this to your platform
+      "request": "launch",
+      "runToEntryPoint": "main",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32F446RE", // PORTABILITY: change this to your platform
+      "configFiles": [
+        "${workspaceFolder}/../../openocd/stm32f4x.cfg"
+      ],
+      "preLaunchTask": "cortex-debug: Build (stm32f446re)", // PORTABILITY: change this to your platform
+      "svdFile": "${workspaceFolder}/../../svd/STM32F446.svd", // PORTABILITY: change this to your platform
+      "swoConfig": {
+        "enabled": true,
+        "cpuFrequency": 16000000,
+        "swoFrequency": 2000000,
+        "source": "probe",
+        "decoders": [
+          {
+            "type": "console",
+            "label": "ITM",
+            "port": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "Debug (native)",
+      "type": "cppdbg", 
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": true,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "program": "${workspaceFolder}/bin/native/Debug/${input:nativeTargetID}",
+      "osx": {
+        "MIMode": "lldb",
+        "miDebuggerPath": "${env:HOME}/.vscode/extensions/ms-vscode.cpptools-1.18.5-darwin-arm64/debugAdapters/lldb-mi/bin/lldb-mi", // CHECK THE CORRECT PATH FOR YOUR MACHINE
+      },
+      "windows": {
+        "miDebuggerPath": "gdb.exe",
+        "program": "${workspaceFolder}/bin/native/Debug/${input:nativeTargetID}.exe"
+      },
+      "preLaunchTask": "native: Build"
+  }
+  ],
+  "inputs": [
+		{
+			"id": "cortexTargetID",
+      "type": "command",
+      "command": "extension.commandvariable.pickStringRemember",
+      "args": {
+        "key": "lasttarget",
+        "description": "Enter the target:",
+        "default": "main",
+        "options": [
+          "main",
+          "test_blink",
+          "test_led",
+          "test_stm32f4"
+        ]
+      }
+		},
+    {
+			"id": "nativeTargetID",
+      "type": "command",
+      "command": "extension.commandvariable.pickStringRemember",
+      "args": {
+        "key": "lasttarget",
+        "description": "Enter the target:",
+        "default": "main",
+        "options": [
+          "main",
+          "test_blink",
+          "test_led",
+        ]
+      }
+		},
+	]
+}
