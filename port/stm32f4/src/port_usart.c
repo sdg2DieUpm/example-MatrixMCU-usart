@@ -119,7 +119,6 @@ void port_usart1_read()
  * @brief Interrupt service routine for USART 1.
  * 
  */
-/*
 void USART1_IRQHandler(void)
 {
     // If it is enabled the reception interrupt 
@@ -140,4 +139,3 @@ void USART1_IRQHandler(void)
         }
     }
 }
-*/
