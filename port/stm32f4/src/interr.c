@@ -4,8 +4,40 @@
 #include "stm32f4xx.h"
 
 //------------------------------------------------------
+// STATIC VARIABLES
+//------------------------------------------------------
+
+static volatile uint32_t msTicks = 0; /*!< Variable to store millisecond ticks */
+
+//------------------------------------------------------
+// PUBLIC FUNCTIONS
+//------------------------------------------------------
+
+/**
+ * @brief Returns the number of milliseconds since the system started.
+ *
+ * @note While this function is declared in port_system.h, it is defined here because
+ * msTicks is a static variable that is only visible in this file.
+ * @retval number of milliseconds since the system started.
+ */
+uint32_t port_system_get_millis()
+{
+  return msTicks;
+}
+
+
+//------------------------------------------------------
 // INTERRUPT SERVICE ROUTINES (ISR)
 //------------------------------------------------------
+
+/**
+ * @brief This function handles System tick timer.
+ */
+void SysTick_Handler(void)
+{
+  msTicks += 1;
+}
+
 /**
  * @brief  Interrupt service routine for USART 1.
  *

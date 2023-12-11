@@ -11,14 +11,14 @@
 			},
 			"command": "cmake",
 			"args": [
-				"--fresh",
+				// "--fresh",
 				"-Bbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
 				"-DPLATFORM=stm32f446re", // PORTABILITY: change this to your platform
 				"-DCMAKE_BUILD_TYPE=Debug",
 			],
 			"windows": {
 				"args": [
-					"--fresh",
+					// "--fresh",
 					"-G", "MinGW Makefiles",
 					"-Bbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
 					"-DPLATFORM=stm32f446re", // PORTABILITY: change this to your platform

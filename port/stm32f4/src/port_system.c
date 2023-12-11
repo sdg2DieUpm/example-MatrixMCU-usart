@@ -2,10 +2,6 @@
 /* HW dependent includes */
 #include "stm32f4xx.h"
 
-
-/* GLOBAL VARIABLES */
-static volatile uint32_t msTicks = 0; /*!< Variable to store millisecond ticks */
-
 /**
  * @brief System Clock Configuration
  *
@@ -78,12 +74,6 @@ size_t port_system_init()
   return 0;
 }
 
-
-uint32_t port_system_get_millis()
-{
-  return msTicks;
-}
-
 void port_system_delay_ms(uint32_t ms)
 {
   uint32_t tickstart = port_system_get_millis();
@@ -101,17 +91,4 @@ void port_system_delay_until_ms(uint32_t *t, uint32_t ms)
     port_system_delay_ms(until - now);
   }
   *t = port_system_get_millis();
-}
-
-
-
-//------------------------------------------------------
-// SUBRUTINAS DE ATENCION A LAS INTERRUPCION
-//------------------------------------------------------
-/**
- * @brief This function handles System tick timer.
- */
-void SysTick_Handler(void)
-{
-  msTicks += 1;
 }
