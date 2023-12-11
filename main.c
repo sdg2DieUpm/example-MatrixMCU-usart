@@ -41,7 +41,7 @@ int main()
     char *hello_str = "Hello world!\n";
     port_usart1_write(hello_str, strlen(hello_str));
 
-    while (1)
+        while (1)
     { // Do nothing. Wait for interrupt to receive a character
     }
 

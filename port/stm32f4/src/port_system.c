@@ -2,6 +2,17 @@
 /* HW dependent includes */
 #include "stm32f4xx.h"
 
+
+//------------------------------------------------------
+// PRIVATE VARIABLES (STATIC)
+//------------------------------------------------------
+
+static volatile uint32_t msTicks = 0; /*!< Variable to store millisecond ticks */
+
+//------------------------------------------------------
+// PRIVATE FUNCTIONS (STATIC)
+//------------------------------------------------------
+
 /**
  * @brief System Clock Configuration
  *
@@ -9,7 +20,7 @@
  * This function starts a system timer that generates a SysTick every 1 ms.
  * @retval None
  */
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
   /** Configure the main internal regulator output voltage */
   /* Power controller (PWR) */
@@ -41,6 +52,10 @@ void SystemClock_Config(void)
   /* Configure the source of time base considering new system clocks settings */
   SysTick_Config(SystemCoreClock / (1000U / TICK_FREQ_1KHZ)); /* Set Systick to 1 ms */
 }
+
+//------------------------------------------------------
+// PUBLIC FUNCTIONS (NON-STATIC)
+//------------------------------------------------------
 
 size_t port_system_init()
 {
@@ -91,4 +106,24 @@ void port_system_delay_until_ms(uint32_t *t, uint32_t ms)
     port_system_delay_ms(until - now);
   }
   *t = port_system_get_millis();
+}
+
+/**
+ * @brief Returns the number of milliseconds since the system started.
+ *
+ * @retval number of milliseconds since the system started.
+ */
+uint32_t port_system_get_millis()
+{
+  return msTicks;
+}
+
+/**
+ * @brief Sets the number of milliseconds since the system started.
+ * 
+ * @param ms New number of milliseconds since the system started.
+ */
+void port_system_set_millis(uint32_t ms)
+{
+  msTicks = ms;
 }

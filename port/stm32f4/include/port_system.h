@@ -49,6 +49,7 @@
 
 size_t port_system_init(void);
 uint32_t port_system_get_millis(void);
+void port_system_set_millis(uint32_t ms);
 void port_system_delay_ms(uint32_t ms);
 void port_system_delay_until_ms(uint32_t *t, uint32_t ms);
 

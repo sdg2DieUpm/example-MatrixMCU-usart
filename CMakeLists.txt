@@ -33,13 +33,15 @@ SET(CMAKE_C_FLAGS_RELEASE "-O3")
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/${PLATFORM}/${CMAKE_BUILD_TYPE})
 
 # Find source and include files of the project
-ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/common)             # project library (common)
-ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/port)               # project library (port)
-FILE (GLOB PROJECT_SOURCES CONFIGURE_DEPENDS ${PROJECT_SOURCES}) # project library source files
+ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/common)  # load project library configuration (common)
+ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/port)    # load project library configuration (port)
+FILE(GLOB PROJECT_SOURCES ${PROJECT_SOURCES})         # project library source files
+FILE(GLOB PROJECT_ISR_SOURCES ${PROJECT_ISR_SOURCES}) # project library ISR source files
 
 # Uncomment the following log traces for debugging
-# MESSAGE(STATUS "Found source files: ${PROJECT_SOURCES}")
 # MESSAGE(STATUS "Found include directories: ${PROJECT_INCLUDE_DIRS}")
+# MESSAGE(STATUS "Found source files: ${PROJECT_SOURCES}")
+# MESSAGE(STATUS "Found ISR source files: ${PROJECT_ISR_SOURCES}")
 
 # Create project library
 ADD_LIBRARY(${PROJECT_NAME} STATIC)
@@ -54,7 +56,7 @@ LINK_LIBRARIES(${PROJECT_NAME})
 
 # Rules to build main executable
 FILE(GLOB PROJECT_MAIN ${CMAKE_CURRENT_SOURCE_DIR}/main.c) # main routine
-ADD_EXECUTABLE(main ${PROJECT_MAIN})
+ADD_EXECUTABLE(main ${PROJECT_MAIN} ${PROJECT_ISR_SOURCES})
 IF(DEFINED PLATFORM_EXTENSION)
     SET_TARGET_PROPERTIES(main PROPERTIES SUFFIX ${PLATFORM_EXTENSION})
 ENDIF()

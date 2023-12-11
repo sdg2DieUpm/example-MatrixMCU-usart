@@ -11,14 +11,14 @@
 			},
 			"command": "cmake",
 			"args": [
-				// "--fresh",
+				// "--fresh", // Uncomment this if you want to force a fresh compilation every time you debug
 				"-Bbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
 				"-DPLATFORM=stm32f446re", // PORTABILITY: change this to your platform
 				"-DCMAKE_BUILD_TYPE=Debug",
 			],
 			"windows": {
 				"args": [
-					// "--fresh",
+					// "--fresh", // Uncomment this if you want to force a fresh compilation every time you debug
 					"-G", "MinGW Makefiles",
 					"-Bbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
 					"-DPLATFORM=stm32f446re", // PORTABILITY: change this to your platform
