@@ -301,7 +301,7 @@
 		{
 			"id": "cortexTargetID",
 			"type": "command",
-			"command": "extension.commandvariable.rememberPick",
+			"command": "extension.commandvariable.remember",
       		"args": { "key": "lasttarget" }
 		},
 	]

@@ -1,13 +1,23 @@
 SET(PROJECT_NAME project) # set it to your project name
-SET(WORKSPACE_ROOT_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/../..) # set it to your workspace root directory
-SET(USE_FSM true) # set it to true to use FSM library
-SET(USE_HAL false) # set it to true to use HAL library
-IF(NOT PLATFORM)
+
+IF(NOT DEFINED MATRIXMCU)
+    SET(MATRIXMCU  ${CMAKE_CURRENT_SOURCE_DIR}/../..) # set it to your default path to MatrixMCU directory
+    MESSAGE(STATUS "No path to MatrixMCU directory selected, using default (${MATRIXMCU}). You can override it by passing -DMATRIXMCU=<MATRIXMCU> to cmake")
+ENDIF()
+IF(NOT DEFINED USE_FSM)
+    SET(USE_FSM true) # set it to true to use FSM library by default
+    MESSAGE(STATUS "No FSM library usage selected, using default (${USE_FSM}). You can override it by passing -DUSE_FSM=<use_fsm> to cmake")
+ENDIF()
+IF(NOT DEFINED USE_HAL)
+    SET(USE_HAL false) # set it to true to use HAL library by default
+    MESSAGE(STATUS "No HAL library usage selected, using default (${USE_HAL}). You can override it by passing -DUSE_HAL=<use_hal> to cmake")
+ENDIF()
+IF(NOT DEFINED PLATFORM)
     SET(PLATFORM "stm32f446re") # PORTABILITY: change this to your platform
     MESSAGE(STATUS "No platform selected, using default (${PLATFORM}). You can override it by passing -DPLATFORM=<platform> to cmake")
 ENDIF()
-IF(NOT CMAKE_BUILD_TYPE)
-    SET(CMAKE_BUILD_TYPE Debug) # set it to your default plaftorm
+IF(NOT DEFINED CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE Debug) # set it to your default build type
     MESSAGE(STATUS "No build type selected, using default (${CMAKE_BUILD_TYPE}). You can override it by passing -DCMAKE_BUILD_TYPE=<build_type> to cmake")
 ENDIF()
 
@@ -16,7 +26,7 @@ ENDIF()
 ########################################################################################
 
 # Load platform-specific setup configuration (e.g., toolchain and libraries)
-INCLUDE(${WORKSPACE_ROOT_DIR}/CMakeLists.txt)
+INCLUDE(${MATRIXMCU}/CMakeLists.txt)
 
 # CMake project configuration
 CMAKE_MINIMUM_REQUIRED(VERSION 3.24)
@@ -36,12 +46,15 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/${PLATFORM}/$
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/common)  # load project library configuration (common)
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/port)    # load project library configuration (port)
 FILE(GLOB PROJECT_SOURCES ${PROJECT_SOURCES})         # project library source files
-FILE(GLOB PROJECT_ISR_SOURCES ${PROJECT_ISR_SOURCES}) # project library ISR source files
+IF(DEFINED PROJECT_ISR_SOURCES)
+    FILE(GLOB PROJECT_ISR_SOURCES ${PROJECT_ISR_SOURCES}) # project library ISR source files
+ENDIF()
 
-# Uncomment the following log traces for debugging
-# MESSAGE(STATUS "Found include directories: ${PROJECT_INCLUDE_DIRS}")
-# MESSAGE(STATUS "Found source files: ${PROJECT_SOURCES}")
-# MESSAGE(STATUS "Found ISR source files: ${PROJECT_ISR_SOURCES}")
+IF(VERBOSE)
+    MESSAGE(STATUS "Found include directories: ${PROJECT_INCLUDE_DIRS}")
+    MESSAGE(STATUS "Found source files: ${PROJECT_SOURCES}")
+    MESSAGE(STATUS "Found ISR source files: ${PROJECT_ISR_SOURCES}")
+ENDIF()
 
 # Create project library
 ADD_LIBRARY(${PROJECT_NAME} STATIC)
