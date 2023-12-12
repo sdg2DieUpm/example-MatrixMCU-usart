@@ -30,6 +30,34 @@
       }
     },
     {
+      "name": "Clean and Debug (stm32f446re)", // PORTABILITY: PORTABILITY: change this to your platform
+      "cwd": "${workspaceRoot}",
+      "executable": "${workspaceFolder}/bin/stm32f446re/Debug/${input:cortexTargetID}.elf", // PORTABILITY: change this to your platform
+      "request": "launch",
+      "runToEntryPoint": "main",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32F446RE", // PORTABILITY: change this to your platform
+      "configFiles": [
+        "${workspaceFolder}/../../openocd/stm32f4x.cfg"
+      ],
+      "preLaunchTask": "cortex-debug: Clean and Build (stm32f446re)",  // PORTABILITY: change this to your platform
+      "svdFile": "${workspaceFolder}/../../svd/STM32F446.svd", // PORTABILITY: change this to your platform
+      "swoConfig": {
+        "enabled": true,
+        "cpuFrequency": 16000000,
+        "swoFrequency": 2000000,
+        "source": "probe",
+        "decoders": [
+          {
+            "type": "console",
+            "label": "ITM",
+            "port": 0
+          }
+        ]
+      }
+    },
+    {
       "name": "Debug (native)",
       "type": "cppdbg", 
       "request": "launch",

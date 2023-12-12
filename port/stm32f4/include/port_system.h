@@ -17,7 +17,6 @@
 /* Includes del sistema */
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 #define HSI_VALUE ((uint32_t)16000000) /*!< Value of the Internal oscillator in Hz */
 

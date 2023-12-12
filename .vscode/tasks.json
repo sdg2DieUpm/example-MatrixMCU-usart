@@ -11,14 +11,37 @@
 			},
 			"command": "cmake",
 			"args": [
-				// "--fresh", // Uncomment this if you want to force a fresh compilation every time you debug
 				"-Bbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
 				"-DPLATFORM=stm32f446re", // PORTABILITY: change this to your platform
 				"-DCMAKE_BUILD_TYPE=Debug",
 			],
 			"windows": {
 				"args": [
-					// "--fresh", // Uncomment this if you want to force a fresh compilation every time you debug
+					"-G", "MinGW Makefiles",
+					"-Bbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
+					"-DPLATFORM=stm32f446re", // PORTABILITY: change this to your platform
+					"-DCMAKE_BUILD_TYPE=Debug",
+				]
+			}
+		},
+		{
+			"label": "cortex-debug: Run CMake, Fresh (stm32f446re)", // PORTABILITY: change this to your platform
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+			},
+			"command": "cmake",
+			"args": [
+				"--fresh", 
+				"-Bbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
+				"-DPLATFORM=stm32f446re", // PORTABILITY: change this to your platform
+				"-DCMAKE_BUILD_TYPE=Debug",
+			],
+			"windows": {
+				"args": [
+					"--fresh",
 					"-G", "MinGW Makefiles",
 					"-Bbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
 					"-DPLATFORM=stm32f446re", // PORTABILITY: change this to your platform
@@ -45,6 +68,32 @@
 				"-Cbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
 				"${input:cortexTargetID}",
 			]
+		},
+		{
+			"label": "cortex-debug: Clean (stm32f446re)", // PORTABILITY: change this to your platform
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build"
+			},
+			"command": "make",
+			"windows": {
+				"command": "mingw32-make"
+			},
+			"args": [
+				"-Cbuild/stm32f446re/Debug", // PORTABILITY: change this to your platform
+				"clean",
+			]
+		},
+		{
+			"label": "cortex-debug: Clean and Build (stm32f446re)", // PORTABILITY: change this to your platform
+			"dependsOn": [
+				"cortex-debug: Run CMake, Fresh (stm32f446re)", // PORTABILITY: change this to your platform
+				"cortex-debug: Clean (stm32f446re)", // PORTABILITY: change this to your platform
+				"cortex-debug: Build (stm32f446re)", // PORTABILITY: change this to your platform				
+			],
+			"dependsOrder": "sequence",
 		},
 		{
 			"label": "native: Run CMake",
@@ -101,14 +150,37 @@
 			},
 			"command": "cmake",
 			"args": [
-				"${input:runFresh}",
 				"-Bbuild/${input:platformID}/${input:buildType}",
 				"-DPLATFORM=${input:platformID}",
 				"-DCMAKE_BUILD_TYPE=${input:buildType}",
 			],
 			"windows": {
 				"args": [
-					"${input:runFresh}",
+					"-G", "MinGW Makefiles",
+					"-Bbuild/${input:platformID}/${input:buildType}",
+					"-DPLATFORM=${input:platformID}",
+					"-DCMAKE_BUILD_TYPE=${input:buildType}",
+				]
+			}
+		},
+		{
+			"label": "Run CMake (fresh)",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+			},
+			"command": "cmake",
+			"args": [
+				"--fresh",
+				"-Bbuild/${input:platformID}/${input:buildType}",
+				"-DPLATFORM=${input:platformID}",
+				"-DCMAKE_BUILD_TYPE=${input:buildType}",
+			],
+			"windows": {
+				"args": [
+					"--fresh",
 					"-G", "MinGW Makefiles",
 					"-Bbuild/${input:platformID}/${input:buildType}",
 					"-DPLATFORM=${input:platformID}",
@@ -118,9 +190,6 @@
 		},
 		{
 			"label": "Build",
-			"dependsOn": [
-				"Run CMake"
-			],
 			"options": {
 				"cwd": "${workspaceRoot}"
 			},
@@ -139,9 +208,6 @@
 		},
 		{
 			"label": "Flash",
-			"dependsOn": [
-				"Build"
-			],
 			"options": {
 				"cwd": "${workspaceRoot}"
 			},
@@ -155,6 +221,23 @@
 			"args": [
 				"-Cbuild/${input:platformID}/${input:buildType}",
 				"flash-${input:targetID}",
+			]
+		},
+		{
+			"label": "Clean",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+			},
+			"command": "make",
+			"windows": {
+				"command": "mingw32-make"
+			},
+			"args": [
+				"-Cbuild/${input:platformID}/${input:buildType}",
+				"clean",
 			]
 		},
 		{

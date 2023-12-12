@@ -3,24 +3,52 @@
 #include "stm32f4xx.h"
 
 
-//------------------------------------------------------
-// PRIVATE VARIABLES (STATIC)
-//------------------------------------------------------
+/* Defines -------------------------------------------------------------------*/
+#define HSI_VALUE ((uint32_t)16000000) /*!< Value of the Internal oscillator in Hz */
 
-static volatile uint32_t msTicks = 0; /*!< Variable to store millisecond ticks */
+/* GLOBAL VARIABLES */
+static volatile uint32_t msTicks = 0; /*!< Variable to store millisecond ticks. @warning **It must be declared volatile!** Just because it is modified in an ISR. **Add it to the definition** after *static*. */
+
+/* These variables are declared extern in CMSIS (system_stm32f4xx.h) */
+uint32_t SystemCoreClock = HSI_VALUE;                                               /*!< Frequency of the System clock */
+const uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9}; /*!< Prescaler values for AHB bus */
+const uint8_t APBPrescTable[8] = {0, 0, 0, 0, 1, 2, 3, 4};                          /*!< Prescaler values for APB bus */
 
 //------------------------------------------------------
-// PRIVATE FUNCTIONS (STATIC)
+// SYSTEM CONFIGURATION
 //------------------------------------------------------
+/**
+ * @brief  Setup the microcontroller system
+ *         Initialize the FPU setting, vector table location and External memory
+ *         configuration.
+ *
+ * @note   This function is called at startup by CMSIS in startup_stm32f446xx.s.
+ */
+void SystemInit(void)
+{
+/* FPU settings ------------------------------------------------------------*/
+#if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+  SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2)); /* set CP10 and CP11 Full Access */
+#endif
+
+#if defined(DATA_IN_ExtSRAM) || defined(DATA_IN_ExtSDRAM)
+  SystemInit_ExtMemCtl();
+#endif /* DATA_IN_ExtSRAM || DATA_IN_ExtSDRAM */
+
+  /* Configure the Vector Table location -------------------------------------*/
+#if defined(USER_VECT_TAB_ADDRESS)
+  SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM */
+#endif                                                 /* USER_VECT_TAB_ADDRESS */
+}
 
 /**
  * @brief System Clock Configuration
  *
- * This function should not be accesible from the outside to avoid configuration problems.
- * This function starts a system timer that generates a SysTick every 1 ms.
+ * @attention This function should NOT be accesible from the outside to avoid configuration problems.
+ * @note This function starts a system timer that generates a SysTick every 1 ms.
  * @retval None
  */
-static void SystemClock_Config(void)
+void system_clock_config(void)
 {
   /** Configure the main internal regulator output voltage */
   /* Power controller (PWR) */
@@ -53,10 +81,6 @@ static void SystemClock_Config(void)
   SysTick_Config(SystemCoreClock / (1000U / TICK_FREQ_1KHZ)); /* Set Systick to 1 ms */
 }
 
-//------------------------------------------------------
-// PUBLIC FUNCTIONS (NON-STATIC)
-//------------------------------------------------------
-
 size_t port_system_init()
 {
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -83,8 +107,9 @@ size_t port_system_init()
 
   /* Peripheral clock enable register */
   RCC->APB1ENR |= RCC_APB1ENR_PWREN; /* PWREN: Power interface clock enable */
+
   /* Configure the system clock */
-  SystemClock_Config();
+  system_clock_config();
 
   return 0;
 }

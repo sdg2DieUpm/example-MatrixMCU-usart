@@ -18,15 +18,11 @@
 
 /* INCLUDES */
 /* System includes */
-#include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
-#include <stdio.h>
 
 /* HW includes */
 #include "port_system.h"
 #include "port_usart.h"
-#include "stm32f4xx.h"
 
 int main()
 {
@@ -36,12 +32,11 @@ int main()
     port_usart1_gpio_setup(); // Configure the GPIO ports connected to the USART 1
     port_usart1_config();     // Configure the USART 1
 
-
     // Say hello to the world
     char *hello_str = "Hello world!\n";
     port_usart1_write(hello_str, strlen(hello_str));
 
-        while (1)
+    while (1)
     { // Do nothing. Wait for interrupt to receive a character
     }
 
