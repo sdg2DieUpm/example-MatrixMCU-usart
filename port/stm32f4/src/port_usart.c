@@ -1,7 +1,7 @@
 /**
  * @file port_usart.c
  * @brief This file contains the implementation of USART port for STM32F446RE.
- * @author Josué Pagán (j.pagan@upm.es) *
+ * @author Josué Pagán (j.pagan@upm.es)
  * @date 2023-12-01
  */
 
@@ -16,95 +16,111 @@
 /* FUNCTIONS */
 void port_usart1_gpio_setup(void)
 {
-    /* Configura PA9 (TX) */
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // Habilita el reloj de la GPIOA (uso macro de CMSIS)
+    /* Configure PA9 (TX) */
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // Enable the clock for GPIOA (using CMSIS macro)
 
-    /* Poner modo alternativo */
-    GPIOA->MODER &= ~MODE_LINEA_9_MASK;                // Asegura que los bits estan limpios
-    GPIOA->MODER |= (MODE_ALTERNATE << (2 * LINEA_9)); // Pon modo alternativo: 0b10<<2*9=0x0008 0000
+    /* Set alternate mode */
+    GPIOA->MODER &= ~MODE_LINEA_9_MASK;                // Ensure the bits are clean
+    GPIOA->MODER |= (MODE_ALTERNATE << (2 * LINEA_9)); // Set alternate mode: 0b10<<2*9=0x0008 0000
 
-    /* Poner a pull-up */
-    GPIOA->PUPDR &= ~PUPDR_LINEA_9_MASK;             // Asegura que los bits estan limpios
-    GPIOA->PUPDR |= (MODE_PULL_UP << (2 * LINEA_9)); // Pon pull-up: 0b01<<2*9=0x0004 0000
+    /* Set to pull-up */
+    GPIOA->PUPDR &= ~PUPDR_LINEA_9_MASK;             // Ensure the bits are clean
+    GPIOA->PUPDR |= (MODE_PULL_UP << (2 * LINEA_9)); // Set pull-up: 0b01<<2*9=0x0004 0000
 
-    /* Configura la function alternativa para trabajar como USART1 TX */
-    /* Como es el pin 9, trabajamos con el registro AFRH (high) */
-    /* Miramos Table 11 del Datasheet para see que USART1 TX es la funcion alternativa 7 (AF7) */
-    GPIOA->AFR[1] &= ~AFRH_LINEA_9_MASK;                          // Asegura que los bits estan limpios
-    GPIOA->AFR[1] |= (ALT_FUNC_UART1_TX << 4 * (LINEA_9 & 0x7U)); // Pon AF7: 0x07<<(4*(0b1001 & 0b0111))=0x0070
+    /* Configure the alternate function to work as USART1 TX */
+    /* As it is pin 9, we work with the AFRH (high) register */
+    /* Look at Table 11 of the Datasheet to see that USART1 TX is alternate function 7 (AF7) */
+    GPIOA->AFR[1] &= ~AFRH_LINEA_9_MASK;                          // Ensure the bits are clean
+    GPIOA->AFR[1] |= (ALT_FUNC_UART1_TX << 4 * (LINEA_9 & 0x7U)); // Set AF7: 0x07<<(4*(0b1001 & 0b0111))=0x0070
 
     /* Configure PA10 (RX) */
-    /* Hay que habilitar el reloj de la GPIOA (pero ya esta activado) */
-    /* Poner modo alternativo */
-    GPIOA->MODER &= ~MODE_LINEA_10_MASK;              // Asegura que los bits estan limpios
-    GPIOA->MODER |= (MODE_ALTERNATE << 2 * LINEA_10); // Pon modo alternativo: 0b10<<2*10=0x00100000
+    /* We need to enable the clock for GPIOA (but it is already enabled) */
+    /* Set alternate mode */
+    GPIOA->MODER &= ~MODE_LINEA_10_MASK;              // Ensure the bits are clean
+    GPIOA->MODER |= (MODE_ALTERNATE << 2 * LINEA_10); // Set alternate mode: 0b10<<2*10=0x00100000
 
-    /* Poner a pull-up */
-    GPIOA->PUPDR &= ~PUPDR_LINEA_10_MASK;           // Asegura que los bits estan limpios
-    GPIOA->PUPDR |= (MODE_PULL_UP << 2 * LINEA_10); // Pon pull-up: 0b01<<2*10=0x00100000
+    /* Set to pull-up */
+    GPIOA->PUPDR &= ~PUPDR_LINEA_10_MASK;           // Ensure the bits are clean
+    GPIOA->PUPDR |= (MODE_PULL_UP << 2 * LINEA_10); // Set pull-up: 0b01<<2*10=0x00100000
 
-    /* Configura la function alternativa para trabajar como USART1 RX */
-    /* Como es el pin 10, trabajamos con el registro AFRH (high) */
-    /* Miramos Table 11 del Datasheet para see que USART1 RX es la funcion alternativa 7 (AF7) */
-    GPIOA->AFR[1] &= ~AFRH_LINEA_10_MASK;                          // Asegura que los bits estan limpios
-    GPIOA->AFR[1] |= (ALT_FUNC_UART1_RX << 4 * (LINEA_10 & 0x7U)); // Pon AF7: 0x07<<(4*(0b1010 & 0b0111))=0x0700
+    /* Configure the alternate function to work as USART1 RX */
+    /* As it is pin 10, we work with the AFRH (high) register */
+    /* Look at Table 11 of the Datasheet to see that USART1 RX is alternate function 7 (AF7) */
+    GPIOA->AFR[1] &= ~AFRH_LINEA_10_MASK;                          // Ensure the bits are clean
+    GPIOA->AFR[1] |= (ALT_FUNC_UART1_RX << 4 * (LINEA_10 & 0x7U)); // Set AF7: 0x07<<(4*(0b1010 & 0b0111))=0x0700
 }
 
 void port_usart1_config()
 {
-    /* Primero habilitamos el reloj de perifericos de la USART-1 */
-    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+    /* First, we enable the peripheral clock for USART-1 */
+        RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
-    /* Deshabilitamos la USART-1 para tocar los registros */
-    USART1->CR1 &= ~USART_CR1_UE; // USART_CR1_UE es de CMSIS (ver stm32f446xx.h)
+        /* We disable USART-1 to touch the registers */
+        USART1->CR1 &= ~USART_CR1_UE; // USART_CR1_UE is from CMSIS (see stm32f446xx.h)
 
-    /* Configuramos la longitud de los datos a 8 bits */
-    USART1->CR1 &= ~USART_CR1_M; // Limpiamos el bit M (8 bits)
+        /* We configure the data length to 8 bits */
+        USART1->CR1 &= ~USART_CR1_M; // We clear the M bit (8 bits)
 
-    /* Configuramos el bit de parada a 1 bit */
-    USART1->CR2 &= ~USART_CR2_STOP; // Limpiamos los bits STOP (1 bit)
+        /* We configure the stop bit to 1 bit */
+        USART1->CR2 &= ~USART_CR2_STOP; // We clear the STOP bits (1 bit)
 
-    /* Configuramos el bit de paridad a no paridad */
-    USART1->CR1 &= ~USART_CR1_PCE; // Limpiamos el bit PCE (no paridad)
+        /* We configure the parity bit to no parity */
+        USART1->CR1 &= ~USART_CR1_PCE; // We clear the PCE bit (no parity)
 
-    /* Aseguramos oversampling de 16 (por defecto) */
-    USART1->CR1 &= ~USART_CR1_OVER8; // Limpiamos el bit OVER8 (oversampling de 16)
+        /* We ensure oversampling of 16 (by default) */
+        USART1->CR1 &= ~USART_CR1_OVER8; // We clear the OVER8 bit (oversampling of 16)
 
-    /* Configuramos el baud rate (ver ejemplo de calculo) */
-    USART1->BRR = 0x3415; // 1200 baudios
+        /* We configure the baud rate (see calculation example) */
+        USART1->BRR = 0x3415; // 1200 baud
 
-    /* Habilitamos la transmision y la recepcion */
-    USART1->CR1 |= USART_CR1_TE | USART_CR1_RE;
+        /* We enable transmission and reception */
+        USART1->CR1 |= USART_CR1_TE | USART_CR1_RE;
 
-    /* Habilitamos las interrupcion de recepcion */
-    USART1->CR1 |= USART_CR1_RXNEIE; // Habilitamos la interrupcion de recepcion
+        /* We enable the reception interrupt */
+        USART1->CR1 |= USART_CR1_RXNEIE; // We enable the reception interrupt
 
-    /* No habilitamos las interrupciones de transmision generalmente al inicio, sino solo cuando es necesario */
-    USART1->CR1 &= ~(USART_CR1_TXEIE | USART_CR1_TCIE); // Deshabilitamos las interrupciones de buffer vacio y transmision completa, por ahora
+        /* We generally do not enable transmission interrupts at the beginning, but only when necessary */
+        USART1->CR1 &= ~(USART_CR1_TXEIE | USART_CR1_TCIE); // We disable the empty buffer and complete transmission interrupts, for now
 
-    /* Habilitamos las interrupciones de la USART-1 globalmente */
-    NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0)); /* Prioridad 1, sub-prioridad 0, por ejemplo */
-    NVIC_EnableIRQ(USART1_IRQn);                                                          // Habilitamos la interrupcion de la USART-1
+        /* We enable the USART-1 interrupts globally */
+        NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0)); /* Priority 1, sub-priority 0, for example */
+        NVIC_EnableIRQ(USART1_IRQn);                                                          // We enable the USART-1 interrupt
 
-    /* Por ultimo, habilitamos la USART-1 */
-    USART1->CR1 |= USART_CR1_UE;
+        /* Finally, we enable USART-1 */
+        USART1->CR1 |= USART_CR1_UE;
 }
 
-void port_usart1_write(char *p_data, uint32_t nBytes)
+void port_usart1_write()
 {
-    for (uint32_t i = 0; i < nBytes; i++)
-    {
-        // Wait until TXE = 1 (TXE is set when the TXDR register is empty)
-        while (!(USART1->SR & USART_SR_TXE))
-            ;
+    // Static variable to store the number of bytes transmitted
+    static uint32_t i = 0;
 
-        // Write data to DR
-        USART1->DR = p_data[i]; // Writing to the DR clears the TXE flag
+    // Before the transmission of the first data, the TE bit must be set. Enable transmission interrupt (TXEIE) and wait
+    if (i == 0)
+    {
+        USART1->CR1 |= USART_CR1_TXEIE;
     }
 
-    // Wait intl TC bit is set. This indicates that the transmission of the last frame is complete
-    while (!(USART1->SR & USART_SR_TC))
+    // Always wait until TXE = 1 (TXE is set when the TXDR register is empty)
+    while (!(USART1->SR & USART_SR_TXE))
         ;
+
+    // Transmit the i-th byte of the data of the global variable g_p_tx_data
+    USART1->DR = g_p_tx_data[i++]; // Write data to DR. Writing to the DR clears the TXE flag
+
+    // After transmission of the last data, restore the number of bytes transmitted to 0
+    if (i >= g_bytes_tx_data)
+    {
+        // Disable transmission interrupt (TXEIE)
+        USART1->CR1 &= ~USART_CR1_TXEIE;
+
+        // Reset the number of bytes transmitted
+        i = 0;
+
+        // Uncomment the following lines to wait until TC = 1 (TC is set when the transmission of the last frame is complete) if TCIE is enabled
+        // Wait until TC bit is set. This indicates that the transmission of the last frame is complete
+        // while (!(USART1->SR & USART_SR_TC));
+    }
 }
 
 void port_usart1_read()
