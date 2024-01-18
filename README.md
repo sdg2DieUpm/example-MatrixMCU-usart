@@ -4,23 +4,23 @@ This project demonstrates how to use the USART port for STM32F446RE connected to
 
 The code uses the USART1 port. The port is configured to use the following settings:
 
-| Parameter    | Value         |
-|--------------|---------------|
-| Baudrate     | 1200          |
-| Data bits    | 8             |
-| Stop bits    | 1             |
-| Parity       | None          |
-| Flow control | None          |
+| Parameter    | Value                       |
+| ------------ | --------------------------- |
+| Baudrate     | 1200                        |
+| Data bits    | 8                           |
+| Stop bits    | 1                           |
+| Parity       | None                        |
+| Flow control | None                        |
 | Mode         | TX and RX (with interrupts) |
-| USART        | USART1        |
-| Pins         | PA9 (TX) and PA10 (RX) |
+| USART        | USART1                      |
+| Pins         | PA9 (TX) and PA10 (RX)      |
 
 When the program starts it sends the string "Hello World!" to the serial port. When the string has been sent the program waits for a character to be received. When a character is received it it is printed out for debug purposes only. You can see the ITM output echoing the received characters.
 
 This project is intended to be used with the MatrixMCU toolkit. The toolkit is available at GitHub: [MatrixMCU](https://github.com/sdg2DieUpm/MatrixMCU).
 
 Click on the image to see the video showing the USART example for Nucleo STM32:
-[![USART Example for Nucleo STM32](docs/assets/circuit_usart1.png)](https://youtu.be/e2QBfF0xO4g "USART Example for Nucleo STM32.")
+[![USART Example for Nucleo STM32](docs/assets/imgs/circuit_usart1.png)](https://youtu.be/e2QBfF0xO4g "USART Example for Nucleo STM32.")
 
 ## Getting Started
 

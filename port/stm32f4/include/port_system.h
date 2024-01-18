@@ -32,7 +32,6 @@
 /* Power */
 #define POWER_REGULATOR_VOLTAGE_SCALE3 0x01 /*!< Scale 3 mode: the maximum value of fHCLK is 120 MHz. */
 
-
 /* GPIOs */
 #define HIGH true /*!< Logic 1 */
 #define LOW false /*!< Logic 0 */

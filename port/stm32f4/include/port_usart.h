@@ -13,24 +13,27 @@
 #include <stdint.h>
 
 /* DEFINES */
-#define LINEA_9 9   /* Para el TX */
-#define LINEA_10 10 /* Para el RX */
+#define LINEA_9 9   /*!< Pin for the TX */
+#define LINEA_10 10 /*!< Pin for the RX */
 
-#define MODE_LINEA_9_MASK (0x03 << (2 * LINEA_9))   /* Desplaza los bits 0b11 a la izquierda 2*9=18 posiciones */
-#define MODE_LINEA_10_MASK (0x03 << (2 * LINEA_10)) /* Desplaza los bits 0b11 a la izquierda 2*10=20 posiciones */
+#define MODE_LINEA_9_MASK (0x03 << (2 * LINEA_9))   /*!< Shifts 0b11 to the left 2*9=18 positions in the mode register */
+#define MODE_LINEA_10_MASK (0x03 << (2 * LINEA_10)) /*!< Shifts 0b11 to the left 2*10=20 positions in the mode register */
 
-#define PUPDR_LINEA_9_MASK (0x03 << (2 * LINEA_9))   /* Desplaza los bits 0b11 a la izquierda 2*9=18 posiciones */
-#define PUPDR_LINEA_10_MASK (0x03 << (2 * LINEA_10)) /* Desplaza los bits 0b11 a la izquierda 2*10=20 posiciones */
+#define PUPDR_LINEA_9_MASK (0x03 << (2 * LINEA_9))   /*!< Shifts 0b11 to the left 2*9=18 positions in the pull-up/pull-down register */
+#define PUPDR_LINEA_10_MASK (0x03 << (2 * LINEA_10)) /*!< Shifts 0b11 to the left 2*10=20 positions in the pull-up/pull-down register */
 
-#define MODE_ALTERNATE 0x02U /* Modo alternativo */
-#define MODE_PULL_UP 0x01U   /* Modo pull-up */
+#define MODE_ALTERNATE 0x02U /*!< Alternate function mode */
+#define MODE_PULL_UP 0x01U   /*!< Pull-up mode */
 
-#define ALT_FUNC_UART1_TX 0x07U /* AF7 para funcion alternativa UART1 TX segun datasheet */
-#define ALT_FUNC_UART1_RX 0x07U /* AF7 para funcion alternativa UART1 RX segun datasheet */
+#define ALT_FUNC_UART1_TX 0x07U /*!< AF7 for alternate function UART1 TX according to datasheet */
+#define ALT_FUNC_UART1_RX 0x07U /*!< AF7 for alternate function UART1 RX according to datasheet */
 
-#define AFRH_LINEA_9_MASK (0x0F << (4 * (LINEA_9 & 0x7U)))   /* Desplaza los bits 0b1111 a la izquierda 4*(0x9 & 0x7)=4 posiciones */
-#define AFRH_LINEA_10_MASK (0x0F << (4 * (LINEA_10 & 0x7U))) /* Desplaza los bits 0b1111 a la izquierda 4*(0xA & 0x7)=8 posiciones */
+#define AFRH_LINEA_9_MASK (0x0F << (4 * (LINEA_9 & 0x7U)))   /*!< Shifts 0b1111 to the left 4*(0x9 & 0x7)=8 positions in the alternate function register */
+#define AFRH_LINEA_10_MASK (0x0F << (4 * (LINEA_10 & 0x7U))) /*!< Shifts 0b1111 to the left 4*(0xA & 0x7)=8 positions in the alternate function register */
 
+/* GLOBAL VARIABLES */
+extern char *g_p_tx_data;        /*!< Global pointer to the data to be transmitted. (g_ for global and p_ for pointer is a common naming convention only) */
+extern uint32_t g_bytes_tx_data; /*!< Global variable to store the number of bytes to be transmitted. */
 
 /* FUNCTIONS */
 /**
@@ -44,21 +47,17 @@ void port_usart1_gpio_setup(void);
 void port_usart1_config(void);
 
 /**
- * @brief  Writes a string to the USART 1 using polling.
- *
- * @param p_data Pointer to the string to be written.
- * @param nBytes Number of bytes to be written.
+ * @brief Writes the global string to the USART 1. 
+ * 
+ * It comes here from the 1st call of the user in main.c and then from the interrupt handler (ISR) after each byte is transmitted.
+ * 
  */
-void port_usart1_write(char *p_data, uint32_t nBytes);
+void port_usart1_write();
 
 /**
  * @brief  Reads a string from the USART 1.
  *
  */
 void port_usart1_read();
-
-/////////////////////////////////////////////////////
-//void port_uart3_config();
-//void port_usart3_read();
 
 #endif // PORT_USART_H_
